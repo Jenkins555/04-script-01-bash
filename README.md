@@ -93,7 +93,24 @@ done
 ### Ваш скрипт:
 
 ```bash
-???
+#!/bin/bash
+
+ips=("192.168.0.1" "173.194.222.113" "87.250.250.242")
+port=80
+
+for ip in "${ips[@]}"
+do
+    for i in {1..5}
+    do
+        nc -z -w 3 "$ip" "$port" &> /dev/null
+        if [ $? -eq 0 ]; then
+            echo "$(date '+%Y-%m-%d %H:%M:%S') - $ip:$port is available" >> log
+        else
+            echo "$(date '+%Y-%m-%d %H:%M:%S') - $ip:$port is not available" >> log
+        fi
+    done
+done
+
 ```
 
 ---
@@ -104,7 +121,14 @@ done
 ### Ваш скрипт:
 
 ```bash
-???
+for ip in "${ips[@]}"; do
+    nc -z -w 3 "$ip" "$port" &> /dev/null
+    if [ $? -ne 0 ]; then
+        echo "$(date '+%Y-%m-%d %H:%M:%S') - $ip:$port is not available" >> error
+        break
+    fi
+done
+
 ```
 
 ---
